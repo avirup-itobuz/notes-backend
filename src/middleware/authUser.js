@@ -18,9 +18,7 @@ const authUser = async (req, res, next) => {
       next();
     });
   } catch (err) {
-    res
-      .status(StatusCodes.CONFLICT)
-      .json({ data: null, message: err, status: 404 });
+    next(err);
   }
 };
 

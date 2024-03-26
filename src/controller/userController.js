@@ -64,19 +64,20 @@ class User {
       res.status(StatusCodes.NOT_FOUND).json({ message: "Failed to delete" });
     }
   }
+
   async login(req, res) {
     try {
       const email = req.body.email;
       const password = req.body.password;
       const user = await userModel.findOne({ email: email });
-      if (String(user.password) == String(password)) {
+      if (String(user.password) === String(password)) {
         const token = generateToken(user._id);
         await user.token.push(token);
         await user.save();
         res.status(StatusCodes.OK).json({
           message: "User logged in",
           status: 404,
-          data: generateToken(user._id),
+          data: token,
         });
       } else {
         throw new Error("Wrong Password");

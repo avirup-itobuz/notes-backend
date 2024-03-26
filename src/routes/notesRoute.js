@@ -23,6 +23,6 @@ router.delete("/delete-hidden-notes", deleteHiddenNotes);
 router.get("/get-note-id/:id", getNoteById);
 router.put("/update-note/:id", updateNote);
 router.delete("/delete-note/:id", deleteNote);
-router.get("/notes/search", search);
+router.get("/notes-search", search);
 router.get("/latest-notes", getLatestNotes);
 export default router;
