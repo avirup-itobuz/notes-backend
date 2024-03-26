@@ -2,8 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { dbConnect } from "./src/db/db.js";
-import notesRouteHandler from "./src/controller/notesRouteHandler.js";
-import userRouteHandler from "./src/controller/userRouteHandler.js";
+import notesRoute from "./src/routes/notesRoute.js";
+import userRoute from "./src/routes/userRoute.js";
 
 dotenv.config();
 
@@ -13,8 +13,8 @@ app.use(express.json());
 
 dbConnect();
 
-app.use("/user", userRouteHandler);
-app.use("/notes", notesRouteHandler);
+app.use("/user", userRoute);
+app.use("/notes", notesRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`server is istening on port ${process.env.PORT}`);
