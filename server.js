@@ -4,12 +4,14 @@ import { StatusCodes } from "http-status-codes";
 import { dbConnect } from "./src/db/db.js";
 import notesRoute from "./src/routes/notesRoute.js";
 import userRoute from "./src/routes/userRoute.js";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 dbConnect();
 

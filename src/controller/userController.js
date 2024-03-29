@@ -7,22 +7,28 @@ function generateToken(id) {
     expiresIn: "30d",
   });
 }
-
+const validateEmail = (email) => {
+  return email.match(
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+};
 class User {
-  async addUser(req, res) {
+  async register(req, res) {
     try {
       const userData = req.body;
+      const x = await userModel.find({ email: userData.email });
+      if (x.length > 0) throw new Error("User already registered");
+      if (!validateEmail(userData.email)) {
+        throw new Error("invalid Email");
+      }
       const user = new userModel(userData);
       await user.save();
       res.status(StatusCodes.OK).json({
         message: "User created",
-        status: 404,
-        data: generateToken(user._id),
+        status: 200,
       });
     } catch (e) {
-      res
-        .status(StatusCodes.CONFLICT)
-        .json({ message: "Error occured!!" + e.message });
+      res.status(StatusCodes.CONFLICT).json({ message: e.message });
     }
   }
   async getAllUser(req, res) {
@@ -83,9 +89,29 @@ class User {
         throw new Error("Wrong Password");
       }
     } catch (e) {
-      res
-        .status(StatusCodes.CONFLICT)
-        .json({ message: "Error occured!!" + e.message });
+      res.status(StatusCodes.CONFLICT).json({ message: e.message });
+    }
+  }
+
+  async verify(req, res) {
+    const token = req.params.token;
+    console.log(token);
+    try {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+          res.status(StatusCodes.UNAUTHORIZED);
+          throw new Error("User is not authorized");
+        }
+
+        const user = userModel.findById(token);
+        console.log(user);
+        if (user)
+          res
+            .status(200)
+            .json({ message: "user authenticated", success: true });
+      });
+    } catch (e) {
+      res.status(404).json({ message: e.message, success: false });
     }
   }
 }

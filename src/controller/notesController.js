@@ -115,9 +115,10 @@ export async function search(req, res, next) {
     const title = req.query.title;
     console.log(title);
     const note = await Note.find({
-      title: { $regex: title },
+      title: { $regex: title, $options: "i" },
       userId: req.id,
     });
+    console.log(note);
     res
       .status(StatusCodes.OK)
       .json({ data: note, message: "success", status: 200 });
